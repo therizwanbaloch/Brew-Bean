@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { HiStar, HiClock, HiOutlineShoppingBag, HiCheckCircle } from 'react-icons/hi';
-import API from '../services/api';
+import { fetchProductBySlugAPI, fetchReviewsAPI } from '../services/api';
 import { useCart } from '../context/CartContext';
 import ReviewList from '../components/reviews/ReviewList';
 import AddReviewForm from '../components/reviews/AddReviewForm';
@@ -23,14 +23,26 @@ export default function ProductDetailPage() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  const loadReviews = async (productId) => {
+    try {
+      const data = await fetchReviewsAPI(productId);
+      if (data?.success) {
+        setReviews(data.reviews || []);
+      }
+    } catch (e) {
+      console.error('Failed to load reviews:', e);
+      setReviews([]);
+    }
+  };
+
   useEffect(() => {
     const fetchProductAndReviews = async () => {
       try {
         setLoading(true);
-        const prodRes = await API.get(`/products/${slug}`);
+        const data = await fetchProductBySlugAPI(slug);
 
-        if (prodRes.data.success || prodRes.data.product) {
-          const fetchedProduct = prodRes.data.product || prodRes.data;
+        if (data.success || data.product) {
+          const fetchedProduct = data.product || data;
           setProduct(fetchedProduct);
 
           if (fetchedProduct.sizes && fetchedProduct.sizes.length > 0) {
@@ -42,13 +54,8 @@ export default function ProductDetailPage() {
             });
           }
 
-          try {
-            const reviewRes = await API.get(`/reviews/product/${fetchedProduct._id}`);
-            if (reviewRes.data?.success) {
-              setReviews(reviewRes.data.reviews || []);
-            }
-          } catch (e) {
-            setReviews([]);
+          if (fetchedProduct._id) {
+            await loadReviews(fetchedProduct._id);
           }
         }
       } catch (err) {
@@ -60,6 +67,11 @@ export default function ProductDetailPage() {
 
     fetchProductAndReviews();
   }, [slug]);
+
+  const refreshReviews = async () => {
+    if (!product?._id) return;
+    await loadReviews(product._id);
+  };
 
   const handleCustomizationToggle = (custom) => {
     const exists = selectedCustomizations.find((c) => c.name === custom.name);
@@ -88,11 +100,6 @@ export default function ProductDetailPage() {
 
     const finalSizeName = selectedSize?.name || product.sizes?.[0]?.name || 'Regular';
 
-    if (!finalSizeName) {
-      setErrorMessage('Please select a valid size.');
-      return;
-    }
-
     setAddingToCart(true);
     setErrorMessage('');
     setSuccessMessage('');
@@ -107,25 +114,13 @@ export default function ProductDetailPage() {
     try {
       await addToCart(cartPayload);
       setSuccessMessage('Item added to cart successfully!');
-
       if (openCart) openCart();
-
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (err) {
       const msg = err.response?.data?.message || err.message || 'Failed to add item to cart.';
       setErrorMessage(msg);
     } finally {
       setAddingToCart(false);
-    }
-  };
-
-  const refreshReviews = async () => {
-    if (!product) return;
-    try {
-      const res = await API.get(`/reviews/product/${product._id}`);
-      if (res.data?.success) setReviews(res.data.reviews || []);
-    } catch (e) {
-      console.error('Could not refresh reviews:', e);
     }
   };
 
@@ -171,7 +166,7 @@ export default function ProductDetailPage() {
                 <span>{product.category?.name || 'Artisanal Roastery'}</span>
                 <div className="flex items-center gap-1 bg-[#3E2723]/60 px-2.5 py-1 rounded-full border border-[#3E2723]">
                   <HiStar className="w-4 h-4 text-[#E67E22] fill-[#E67E22]" />
-                  <span className="text-[#FDFBF7] font-bold">{product.averageRating || product.rating || 0}</span>
+                  <span className="text-[#FDFBF7] font-bold">{product.averageRating || 0}</span>
                   <span className="text-[#D2B48C]/60">({product.totalReviews || reviews.length || 0})</span>
                 </div>
               </div>
@@ -214,7 +209,7 @@ export default function ProductDetailPage() {
                 </div>
               )}
 
-              {/* Customizations Add-ons */}
+              {/* Customizations */}
               {product.customizations && product.customizations.length > 0 && (
                 <div className="space-y-2 mb-6">
                   <label className="text-xs uppercase tracking-wider text-[#D2B48C] font-bold block">
@@ -279,7 +274,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Total Price & Action Button */}
+            {/* Total Price & Add to Cart */}
             <div className="space-y-3 pt-4 border-t border-[#3E2723]/60">
               <div className="flex items-center justify-between">
                 <span className="text-xs text-[#D2B48C] font-medium uppercase tracking-wider">Total Price</span>
@@ -316,6 +311,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
+        {/* Reviews Section */}
         <section className="space-y-6 pt-6">
           <h2 className="text-2xl font-bold font-serif text-[#FDFBF7]">Customer Reviews</h2>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -10,6 +10,7 @@ import AdminLayout from '../layouts/AdminLayout';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminOrdersPage from '../pages/admin/AdminOrdersPage';
 import AdminProductsPage from '../pages/admin/AdminProductsPage';
+import AdminCategoriesPage from '../pages/admin/AdminCategoriesPage';
 
 // Public Auth & Core Pages
 import Home from '../pages/Home';
@@ -26,6 +27,7 @@ import CheckoutPage from '../pages/CheckoutPage';
 import OrderConfirmationPage from '../pages/OrderConfirmationPage';
 import MyOrdersPage from '../pages/MyOrdersPage';
 import Profile from '../pages/Profile';
+import AboutPage from '../pages/About';
 
 const AppRoutes = () => {
   return (
@@ -36,6 +38,7 @@ const AppRoutes = () => {
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="about" element={<AboutPage />} />
         
         {/* Module 2: Product Discovery & Details */}
         <Route path="products" element={<ProductsPage />} />
@@ -72,6 +75,7 @@ const AppRoutes = () => {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="orders" element={<AdminOrdersPage />} />
           <Route path="products" element={<AdminProductsPage />} />
+          <Route path="categories" element={<AdminCategoriesPage />} />
         </Route>
       </Route>
     </Routes>

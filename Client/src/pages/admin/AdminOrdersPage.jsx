@@ -13,6 +13,14 @@ import {
 } from 'lucide-react';
 import { fetchAdminOrdersAPI, updateOrderStatusAPI } from '../../services/api';
 
+const STATUS_OPTIONS = [
+  "Pending",
+  "Preparing",
+  "Out for Delivery",
+  "Delivered",
+  "Cancelled",
+];
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -124,7 +132,7 @@ export default function AdminOrdersPage() {
 
           <button
             onClick={loadOrders}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl transition shadow-xs"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl transition shadow-xs cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh
@@ -158,7 +166,12 @@ export default function AdminOrdersPage() {
               ) : (
                 filteredOrders.map((order) => {
                   const itemsList = order.items || order.orderItems || [];
-                  const currentStatus = order.status || order.orderStatus || 'Pending';
+                  const rawStatus = order.status || order.orderStatus || 'Pending';
+                  
+                  // Match case to backend options if available
+                  const currentStatus = STATUS_OPTIONS.find(
+                    (opt) => opt.toLowerCase() === rawStatus.toLowerCase()
+                  ) || rawStatus;
 
                   return (
                     <tr key={order._id} className="hover:bg-slate-50/80 transition">
@@ -180,7 +193,7 @@ export default function AdminOrdersPage() {
                         </div>
                       </td>
 
-                      {/* Items with Cloudinary / Backend Image preview */}
+                      {/* Items */}
                       <td className="p-4 max-w-xs">
                         <div className="space-y-1.5">
                           {itemsList.map((it, i) => {
@@ -234,10 +247,11 @@ export default function AdminOrdersPage() {
                           onChange={(e) => handleStatusChange(order._id, e.target.value)}
                           className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-800 font-medium focus:outline-none focus:border-indigo-500 transition disabled:opacity-50 cursor-pointer shadow-xs"
                         >
-                          <option value="Pending">Pending</option>
-                          <option value="Preparing">Preparing</option>
-                          <option value="Completed">Completed</option>
-                          <option value="Cancelled">Cancelled</option>
+                          {STATUS_OPTIONS.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
                         </select>
                       </td>
                     </tr>

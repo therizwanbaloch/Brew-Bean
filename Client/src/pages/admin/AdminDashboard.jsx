@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import {
   Users,
@@ -33,6 +34,7 @@ import {
 } from '../../services/api';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -227,7 +229,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* 3. STATISTICS CARDS (White Clean Cards) */}
+      {/* 3. STATISTICS CARDS */}
       <div>
         <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-3 flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-indigo-600" /> Store Operational Metrics
@@ -312,28 +314,28 @@ export default function AdminDashboard() {
           </h3>
           <div className="grid grid-cols-2 gap-3 text-xs">
             <button 
-              onClick={() => toast('Navigate to Product Management to add items', { icon: '☕' })}
+              onClick={() => navigate('/admin/products')}
               className="p-3 bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 rounded-xl text-left transition flex flex-col gap-2 group"
             >
               <PlusCircle className="w-5 h-5 text-indigo-600 group-hover:scale-110 transition" />
               <span className="font-semibold text-slate-800">Add Product</span>
             </button>
             <button 
-              onClick={() => toast('Categories management module ready', { icon: '📂' })}
+              onClick={() => navigate('/admin/categories')}
               className="p-3 bg-slate-50 hover:bg-purple-50/50 border border-slate-200 rounded-xl text-left transition flex flex-col gap-2 group"
             >
               <FolderTree className="w-5 h-5 text-purple-600 group-hover:scale-110 transition" />
               <span className="font-semibold text-slate-800">Add Category</span>
             </button>
             <button 
-              onClick={() => toast('Showing full store orders table below', { icon: '📦' })}
+              onClick={() => navigate('/admin/orders')}
               className="p-3 bg-slate-50 hover:bg-amber-50/50 border border-slate-200 rounded-xl text-left transition flex flex-col gap-2 group"
             >
               <ShoppingBag className="w-5 h-5 text-amber-600 group-hover:scale-110 transition" />
               <span className="font-semibold text-slate-800">Manage Orders</span>
             </button>
             <button 
-              onClick={() => toast('Inventory counts synchronized', { icon: '👁️' })}
+              onClick={() => navigate('/admin/products')}
               className="p-3 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200 rounded-xl text-left transition flex flex-col gap-2 group"
             >
               <Eye className="w-5 h-5 text-emerald-600 group-hover:scale-110 transition" />

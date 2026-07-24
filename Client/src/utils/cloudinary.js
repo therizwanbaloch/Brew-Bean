@@ -1,20 +1,23 @@
 export const uploadToCloudinary = async (file) => {
-  const cloudName = 'YOUR_CLOUDINARY_CLOUD_NAME'; // Replace with your cloud name
-  const uploadPreset = 'YOUR_UPLOAD_PRESET';      // Replace with your unsigned preset
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
   const formData = new FormData();
-  formData.append('file', file);
-  formData.append('upload_preset', uploadPreset);
+  formData.append("file", file);
+  formData.append("upload_preset", uploadPreset);
 
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-    method: 'POST',
-    body: formData,
-  });
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 
-  if (!res.ok) {
-    throw new Error('Failed to upload image to Cloudinary');
+  if (!response.ok) {
+    throw new Error("Failed to upload image to Cloudinary");
   }
 
-  const data = await res.json();
-  return data.secure_url; // Returns the uploaded image URL from Cloudinary
+  const data = await response.json();
+  return data.secure_url;
 };

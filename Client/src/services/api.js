@@ -50,6 +50,24 @@ export const loginUser = async (credentials) => {
 };
 
 // ==========================================
+// PRODUCTS ENDPOINTS
+// ==========================================
+
+export const fetchProductBySlugAPI = async (slug) => {
+  const response = await API.get(`/products/${slug}`);
+  return response.data;
+};
+
+// ==========================================
+// REVIEWS ENDPOINTS
+// ==========================================
+
+export const fetchReviewsAPI = async (productId) => {
+  const response = await API.get(`/reviews/${productId}`);
+  return response.data;
+};
+
+// ==========================================
 // CART ENDPOINTS
 // ==========================================
 
@@ -97,8 +115,32 @@ export const removeFromCartAPI = async (productId) => {
   return response.data;
 };
 
-export const clearCartAPI = async (productId) => {
+export const clearCartAPI = async () => {
   const response = await API.delete('/cart');
+  return response.data;
+};
+
+// ==========================================
+// CATEGORIES ENDPOINTS
+// ==========================================
+
+export const fetchCategoriesAPI = async () => {
+  const response = await API.get('/categories');
+  return response.data?.categories || response.data || [];
+};
+
+export const createCategoryAPI = async (categoryData) => {
+  const response = await API.post('/categories', categoryData);
+  return response.data;
+};
+
+export const updateCategoryAPI = async (id, categoryData) => {
+  const response = await API.put(`/categories/${id}`, categoryData);
+  return response.data;
+};
+
+export const deleteCategoryAPI = async (id) => {
+  const response = await API.delete(`/categories/${id}`);
   return response.data;
 };
 
@@ -106,61 +148,51 @@ export const clearCartAPI = async (productId) => {
 // ADMIN & DASHBOARD ENDPOINTS
 // ==========================================
 
-// 1. Overall Dashboard Statistics
 export const fetchDashboardStatsAPI = async () => {
   const response = await API.get('/admin/dashboard');
   return response.data;
 };
 
-// 2. Dashboard Analytics (Today, Weekly, Monthly)
 export const fetchDashboardAnalyticsAPI = async () => {
   const response = await API.get('/admin/dashboard/analytics');
   return response.data;
 };
 
-// 3. Dashboard Activity (Recent Users, Orders, Reviews)
 export const fetchDashboardActivityAPI = async () => {
   const response = await API.get('/admin/dashboard/activity');
   return response.data;
 };
 
-// 4. Inventory Overview (Low stock, Out of stock, Featured)
 export const fetchDashboardInventoryAPI = async () => {
   const response = await API.get('/admin/dashboard/inventory');
   return response.data;
 };
 
-// 5. Get All Orders
 export const fetchAdminOrdersAPI = async () => {
   const response = await API.get('/admin/orders');
   return response.data;
 };
 
-// 6. Update Order Status ('Pending' | 'Preparing' | 'Out for Delivery' | 'Delivered' | 'Cancelled')
 export const updateOrderStatusAPI = async (orderId, orderStatus) => {
   const response = await API.put(`/admin/orders/${orderId}`, { orderStatus });
   return response.data;
 };
 
-// Get all products (Admin view)
 export const fetchAdminProductsAPI = async () => {
   const response = await API.get('/products');
   return response.data;
 };
 
-// Create a new product
 export const createProductAPI = async (productData) => {
   const response = await API.post('/products', productData);
   return response.data;
 };
 
-// Update existing product
 export const updateProductAPI = async (productId, productData) => {
   const response = await API.put(`/products/${productId}`, productData);
   return response.data;
 };
 
-// Delete product
 export const deleteProductAPI = async (productId) => {
   const response = await API.delete(`/products/${productId}`);
   return response.data;

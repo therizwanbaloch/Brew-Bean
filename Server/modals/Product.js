@@ -4,7 +4,7 @@ const sizeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      enum: ["Small", "Medium", "Large"],
+      enum: ["Small", "Medium", "Large", "Regular"],
       required: true,
     },
     price: {
