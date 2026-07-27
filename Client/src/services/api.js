@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://brew-bean.onrender.com/api',
+  // baseURL: 'https://brew-bean.onrender.com/api',
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -52,6 +53,18 @@ export const loginUser = async (credentials) => {
 // ==========================================
 // PRODUCTS ENDPOINTS
 // ==========================================
+
+// Added: Main function to fetch all products
+export const fetchProductsAPI = async () => {
+  const response = await API.get('/products');
+  return response.data;
+};
+
+// Added: Route to hit your /products/featured/all backend endpoint
+export const fetchFeaturedProductsAPI = async () => {
+  const response = await API.get('/products/featured/all');
+  return response.data;
+};
 
 export const fetchProductBySlugAPI = async (slug) => {
   const response = await API.get(`/products/${slug}`);

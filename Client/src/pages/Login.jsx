@@ -1,30 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { loginUser } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  
+  const [errorMessage, setErrorMessage] = useState("");
+
   const navigate = useNavigate();
   const { login } = useAuth(); // AuthContext hook
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    if (errorMessage) setErrorMessage('');
+    if (errorMessage) setErrorMessage("");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMessage('');
+    setErrorMessage("");
 
     try {
-      console.log('Sending credentials to http://localhost:5000/api/auth/login...', formData);
       const data = await loginUser(formData);
-      console.log('API Response received:', data);
 
       // Verify response payload
       const token = data.token || data.accessToken;
@@ -35,16 +33,16 @@ const Login = () => {
         login(userObj, token);
 
         // Redirect based on role
-        if (userObj.role === 'admin') {
-          navigate('/admin/dashboard');
+        if (userObj.role === "admin") {
+          navigate("/admin/dashboard");
         } else {
-          navigate('/menu');
+          navigate("/products");
         }
       } else {
-        setErrorMessage(data.message || 'Invalid email or password.');
+        setErrorMessage(data.message || "Invalid email or password.");
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       setErrorMessage(error.message);
     } finally {
       setLoading(false);
@@ -54,11 +52,10 @@ const Login = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#0F0A06] p-4 sm:p-6 lg:p-8">
       <div className="w-full max-w-5xl bg-[#1A120C] rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 border border-[#2E2015]">
-        
         {/* Left Branding Panel */}
         <div className="hidden lg:flex lg:col-span-5 relative bg-[#24170E] flex-col justify-between p-10 overflow-hidden">
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#C68D5D_1px,transparent_1px)] [background-size:16px_16px]"></div>
-          
+
           <div className="relative z-10">
             <span className="inline-block px-3 py-1 bg-[#C68D5D]/10 text-[#C68D5D] border border-[#C68D5D]/20 rounded-full text-xs font-semibold tracking-wider uppercase mb-4">
               Artisanal Coffee
@@ -73,7 +70,8 @@ const Login = () => {
 
           <div className="relative z-10 my-12">
             <blockquote className="text-[#D4C3B5] text-lg italic font-serif leading-relaxed">
-              "Freshly roasted beans, handcrafted drinks, and warm delights delivered right to your table."
+              "Freshly roasted beans, handcrafted drinks, and warm delights
+              delivered right to your table."
             </blockquote>
           </div>
 
@@ -88,7 +86,6 @@ const Login = () => {
         {/* Form Panel */}
         <div className="lg:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center">
           <div className="max-w-md w-full mx-auto">
-            
             <div className="text-center lg:text-left mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-[#F5EBE6]">
                 Welcome Back
@@ -100,8 +97,18 @@ const Login = () => {
 
             {errorMessage && (
               <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3">
-                <svg className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 text-rose-400 shrink-0 mt-0.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <p className="text-xs sm:text-sm text-rose-300 font-medium">
                   {errorMessage}
@@ -130,7 +137,10 @@ const Login = () => {
                   <label className="block text-xs font-semibold uppercase tracking-wider text-[#D4C3B5]">
                     Password
                   </label>
-                  <a href="#forgot" className="text-xs text-[#C68D5D] hover:underline font-medium">
+                  <a
+                    href="#forgot"
+                    className="text-xs text-[#C68D5D] hover:underline font-medium"
+                  >
                     Forgot?
                   </a>
                 </div>
@@ -152,9 +162,24 @@ const Login = () => {
               >
                 {loading ? (
                   <>
-                    <svg className="animate-spin h-4 w-4 text-[#0F0A06]" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin h-4 w-4 text-[#0F0A06]"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     <span>Authenticating...</span>
                   </>
@@ -165,15 +190,16 @@ const Login = () => {
             </form>
 
             <p className="text-center text-xs text-[#A38A75] mt-8">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-[#C68D5D] font-semibold hover:underline">
+              Don't have an account?{" "}
+              <Link
+                to="/register"
+                className="text-[#C68D5D] font-semibold hover:underline"
+              >
                 Create Account
               </Link>
             </p>
-
           </div>
         </div>
-
       </div>
     </div>
   );

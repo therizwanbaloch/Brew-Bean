@@ -74,6 +74,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6 text-sm font-medium">
             <Link to="/" className="hover:text-amber-400 transition">Home</Link>
             <Link to="/products" className="hover:text-amber-400 transition">Menu</Link>
+            <Link to="/about" className="hover:text-amber-400 transition">About</Link>
             
             {isAdmin && (
               <Link 
@@ -170,6 +171,7 @@ export default function Navbar() {
           </form>
           <Link to="/" onClick={() => setMenuOpen(false)} className="block py-2 text-amber-100 border-b border-amber-800/50">Home</Link>
           <Link to="/products" onClick={() => setMenuOpen(false)} className="block py-2 text-amber-100 border-b border-amber-800/50">Full Menu</Link>
+          <Link to="/about" onClick={() => setMenuOpen(false)} className="block py-2 text-amber-100 border-b border-amber-800/50">About Us</Link>
           {user && (
             <Link to="/my-orders" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 py-2 text-amber-100 border-b border-amber-800/50">
               <HiOutlineClipboardList className="w-4 h-4" />
