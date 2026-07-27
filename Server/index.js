@@ -16,15 +16,13 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
   "https://brew-bean-pink.vercel.app",
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl)
+      
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
